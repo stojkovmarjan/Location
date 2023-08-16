@@ -16,7 +16,7 @@ namespace LocationApi.Controllers
             _fileService = fileService;
             _logger = logger;
         }
-
+// test
         [HttpPost]
         public async Task< ActionResult<Location>> WriteLocation(Location location){
 
