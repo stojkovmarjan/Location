@@ -25,7 +25,8 @@ namespace LocationApi.Controllers
             +" - "+location.Accuracy.ToString());
 
             var locationString = DateTime.Now.ToString()+": "
-            +location.Accuracy.ToString()
+            +location.DeviceId+" - "
+            +location.Accuracy.ToString()+", "
             +location.Latitude.ToString()+", "
             +location.Longitude.ToString();
 
