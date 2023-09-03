@@ -16,7 +16,7 @@ namespace LocationApi.Controllers
             _fileService = fileService;
             _logger = logger;
         }
-// test
+
         [HttpPost]
         public async Task< ActionResult<Location>> WriteLocation(Location location){
 
@@ -28,7 +28,8 @@ namespace LocationApi.Controllers
             +location.DeviceId+" - "
             +location.Accuracy.ToString()+", "
             +location.Latitude.ToString()+", "
-            +location.Longitude.ToString();
+            +location.Longitude.ToString()+", "
+            +location.Provider;
 
             var success = await _fileService.AppendToFileAsync(locationString);
 
