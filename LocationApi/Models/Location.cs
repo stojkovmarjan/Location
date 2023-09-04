@@ -12,5 +12,6 @@ namespace LocationApi.Models
         public double Longitude { get; set; }
         public double Accuracy { get; set; }
         public string? Provider { get; set; }
+        public string? Message { get; set; }
     }
 }

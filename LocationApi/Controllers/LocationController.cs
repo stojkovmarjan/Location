@@ -29,7 +29,8 @@ namespace LocationApi.Controllers
             +location.Accuracy.ToString()+", "
             +location.Latitude.ToString()+", "
             +location.Longitude.ToString()+", "
-            +location.Provider;
+            +location.Provider+", "
+            +location.Message;
 
             var success = await _fileService.AppendToFileAsync(locationString);
 
