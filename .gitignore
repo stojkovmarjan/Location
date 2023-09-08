@@ -477,6 +477,8 @@ $RECYCLE.BIN/
 *.lnk
 obj/
 bin/
+log/
+
 
 
 
