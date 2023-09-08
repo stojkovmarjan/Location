@@ -475,10 +475,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-bin/
-obj/
-*/obj/
-*/obj/
-
-
