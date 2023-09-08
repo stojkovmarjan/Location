@@ -7,11 +7,17 @@ namespace LocationApi.Services
 {
     public class FileService
     {
-        private readonly string _filePath;
+        //private string _filePath;
+        public string? FilePath { get; set; }
+        public FileService()
+        {
+            
+        }
         public FileService(string filePath)
         {
-            _filePath = filePath;
+            FilePath = filePath;
         }
+
 
         public async Task<bool> AppendToFileAsync(string content){
 
@@ -19,7 +25,7 @@ namespace LocationApi.Services
 
             try
                 {
-                    using (var writer = new StreamWriter(_filePath, append: true))
+                    using (var writer = new StreamWriter(FilePath!, append: true))
                     {
                         await writer.WriteLineAsync(content);
                     }
