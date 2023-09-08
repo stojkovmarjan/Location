@@ -16,7 +16,6 @@ Log.Logger = new LoggerConfiguration() // serilog to file from nuget
 builder.Host.UseSerilog();
 
 // Add the FileService to DI container
-//var fileName = DateTime.Now.Year.ToString()+DateTime.Now.Month.ToString()+DateTime.Now.Day.ToString()+".txt";
 
 builder.Services.AddSingleton<FileService>(new FileService());
 
