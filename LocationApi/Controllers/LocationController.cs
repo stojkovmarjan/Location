@@ -33,6 +33,9 @@ namespace LocationApi.Controllers
             +location.Provider+", "
             +location.Message;
 
+            _fileService.FilePath ="log/" 
+                + DateTime.Now.Year.ToString()+DateTime.Now.Month.ToString()+DateTime.Now.Day.ToString()+".txt";
+
             var success = await _fileService.AppendToFileAsync(locationString);
 
             if (success){
