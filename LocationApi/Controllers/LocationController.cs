@@ -19,12 +19,22 @@ namespace LocationApi.Controllers
 
         [HttpPost]
         public async Task< ActionResult<Location>> WriteLocation(Location location){
+
             _logger.LogInformation("LOCATION RECEIVED: "+ location.Latitude.ToString()
             +" - "+location.Longitude.ToString()
             +" - "+location.Accuracy.ToString());
 
-            var locationString = DateTime.Now.ToString()+": "+location.Latitude.ToString()+" _ "
-            +location.Longitude.ToString()+" _ "+location.Accuracy.ToString();
+            var locationString = DateTime.Now.ToString()+": "
+            +location.Time.ToString()+", "
+            +location.DeviceId+" - "
+            +location.Accuracy.ToString()+", "
+            +location.Latitude.ToString()+", "
+            +location.Longitude.ToString()+", "
+            +location.Provider+", "
+            +location.Message;
+
+            _fileService.FilePath ="log/" 
+                + DateTime.Now.Year.ToString()+DateTime.Now.Month.ToString()+DateTime.Now.Day.ToString()+".txt";
 
             var success = await _fileService.AppendToFileAsync(locationString);
 

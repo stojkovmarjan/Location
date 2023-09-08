@@ -475,3 +475,17 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+LocationApi/obj/
+LocationApi/bin/
+LocationApi/obj
+LocationApi/bin
+bin
+obj
+bin/
+obj/
+/bin
+/obj
+/bin/
+/obj/
+log/
+
