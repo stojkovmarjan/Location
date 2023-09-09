@@ -24,13 +24,18 @@ namespace LocationApi.Controllers
             +" - "+location.Longitude.ToString()
             +" - "+location.Accuracy.ToString());
 
+            var comma = ", ";
+            if (location.Message!.Equals("")){
+                comma = "";
+            }
+
             var locationString = DateTime.Now.ToString()+": "
             +location.Time.ToString()+", "
             +location.DeviceId+" - "
             +location.Accuracy.ToString()+", "
             +location.Latitude.ToString()+", "
             +location.Longitude.ToString()+", "
-            +location.Provider+", "
+            +location.Provider+comma
             +location.Message;
 
             _fileService.FilePath ="log/" 
