@@ -35,11 +35,17 @@ namespace LocationApi.Controllers
             +location.Accuracy.ToString()+", "
             +location.Latitude.ToString()+", "
             +location.Longitude.ToString()+", "
+            +location.BatteryLevel+", "
+            +location.TimeZone+", "
+            +location.TZoneOffset+", "
             +location.Provider+comma
             +location.Message;
 
             _fileService.FilePath ="log/" 
-                + DateTime.Now.Year.ToString()+DateTime.Now.Month.ToString()+DateTime.Now.Day.ToString()+".txt";
+                +location.DeviceId+"_"
+                +DateTime.Now.Year.ToString()
+                +DateTime.Now.Month.ToString()
+                +DateTime.Now.Day.ToString()+".txt";
 
             var success = await _fileService.AppendToFileAsync(locationString);
 
