@@ -14,5 +14,8 @@ namespace LocationApi.Models
         public double Accuracy { get; set; }
         public string? Provider { get; set; }
         public string? Message { get; set; }
+        public int BatteryLevel { get; set; }
+        public string? TimeZone { get; set; }
+        public int TZoneOffset { get; set; }
     }
 }
