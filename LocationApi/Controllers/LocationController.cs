@@ -1,3 +1,4 @@
+using LocationApi.DTOs;
 using LocationApi.Models;
 using LocationApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -49,8 +50,19 @@ namespace LocationApi.Controllers
 
             var success = await _fileService.AppendToFileAsync(locationString);
 
+            LocationParameters locationParameters = new LocationParameters()
+            { 
+                UpdateInterval = 180, MinUpdateInterval = 160, UpdateDistance = 5.0f
+            };
+            
+            LocationResponseDto locationResponseDto = new LocationResponseDto()
+            {
+                Location = location,
+                LocationParameters = locationParameters
+            };
+
             if (success){
-                 return Ok(location);
+                 return Ok(locationResponseDto);
             } else return BadRequest("Error writing location!");
             
         }
