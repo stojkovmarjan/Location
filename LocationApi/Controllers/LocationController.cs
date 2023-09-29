@@ -64,7 +64,7 @@ namespace LocationApi.Controllers
             LocationResponseDto locationResponseDto = new LocationResponseDto()
             {
                 LocationResponse = location,
-                LocationParameters = locationParameters
+                ParametersResponse = locationParameters
             };
 
             if (success){
