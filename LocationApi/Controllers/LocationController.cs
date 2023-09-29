@@ -50,10 +50,13 @@ namespace LocationApi.Controllers
 
             var success = await _fileService.AppendToFileAsync(locationString);
 
+            // TODO: if there are new parameters for the device
+            // get them and send them, else set locationParameters = null
             LocationParameters locationParameters = new LocationParameters()
             { 
                 UpdateInterval = 180, MinUpdateInterval = 160, UpdateDistance = 5.0f
             };
+            // ------------------------------------------------------------
             
             LocationResponseDto locationResponseDto = new LocationResponseDto()
             {
@@ -65,6 +68,11 @@ namespace LocationApi.Controllers
                  return Ok(locationResponseDto);
             } else return BadRequest("Error writing location!");
             
+        }
+
+        [HttpPost("SetParameters")]
+        public ActionResult<LocationParamSetDto> SetParameters(LocationParamSetDto locationParamSetDto){
+            return Ok(locationParamSetDto);
         }
     }
 }
