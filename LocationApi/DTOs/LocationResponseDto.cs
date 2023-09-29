@@ -4,7 +4,7 @@ namespace LocationApi.DTOs
 {
     public class LocationResponseDto
     {
-        public Location? Location { get; set;}
+        public Location? LocationResponse { get; set;}
         public LocationParameters? LocationParameters { get; set;}
     }
 }

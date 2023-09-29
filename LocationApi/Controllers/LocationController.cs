@@ -54,13 +54,16 @@ namespace LocationApi.Controllers
             // get them and send them, else set locationParameters = null
             LocationParameters locationParameters = new LocationParameters()
             { 
-                UpdateInterval = 180, MinUpdateInterval = 160, UpdateDistance = 5.0f
+                UpdateInterval = 180,
+                MinUpdateInterval = 160,
+                UpdateDistance = 5.0f,
+                StartOnBoot = true
             };
             // ------------------------------------------------------------
             
             LocationResponseDto locationResponseDto = new LocationResponseDto()
             {
-                Location = location,
+                LocationResponse = location,
                 LocationParameters = locationParameters
             };
 
