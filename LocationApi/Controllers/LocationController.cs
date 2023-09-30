@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using LocationApi.DTOs;
 using LocationApi.Models;
 using LocationApi.Services;
@@ -21,11 +22,18 @@ namespace LocationApi.Controllers
         [HttpPost]
         public async Task< ActionResult<Location>> WriteLocation(Location location){
 
+
             _logger.LogInformation("LOCATION RECEIVED: "+ location.Latitude.ToString()
             +" - "+location.Longitude.ToString()
             +" - "+location.Accuracy.ToString());
 
+            LocationParameters locationParameters = null;
+            if (GetParamsFromFile(location.DeviceId!) != null){
+                locationParameters = GetParamsFromString(GetParamsFromFile(location.DeviceId!));
+            }
+
             var comma = ", ";
+
             if (location.Message!.Equals("")){
                 comma = "";
             }
@@ -49,17 +57,6 @@ namespace LocationApi.Controllers
                 +DateTime.Now.Day.ToString()+".txt";
 
             var success = await _fileService.AppendToFileAsync(locationString);
-
-            // TODO: if there are new parameters for the device
-            // get them and send them, else set locationParameters = null
-            LocationParameters locationParameters = new LocationParameters()
-            { 
-                UpdateInterval = 180,
-                MinUpdateInterval = 160,
-                UpdateDistance = 5.0f,
-                StartOnBoot = true
-            };
-            // ------------------------------------------------------------
             
             LocationResponseDto locationResponseDto = new LocationResponseDto()
             {
@@ -68,14 +65,70 @@ namespace LocationApi.Controllers
             };
 
             if (success){
+                _fileService.FilePath = "params/"+location.DeviceId+".txt";
+                _fileService.DeleteFile();
                  return Ok(locationResponseDto);
             } else return BadRequest("Error writing location!");
             
         }
 
-        [HttpPost("SetParameters")]
-        public ActionResult<LocationParamSetDto> SetParameters(LocationParamSetDto locationParamSetDto){
+        [HttpPost("SendParameters")]
+        public async Task<ActionResult<LocationParamSetDto>> SendParameters(
+            LocationParamSetDto locationParamSetDto){
+
+            if (!ModelState.IsValid) return BadRequest();
+
+            if (locationParamSetDto == null || locationParamSetDto.DevicesList?.Count<1) {
+                return BadRequest("Device list can not be empty");
+            }
+
+            var paramsString = locationParamSetDto.LocationParameters!.UpdateInterval.ToString()+","
+            + locationParamSetDto.LocationParameters.MinUpdateInterval.ToString()+","
+            + locationParamSetDto.LocationParameters.UpdateDistance.ToString()+","
+            +locationParamSetDto.LocationParameters.StartOnBoot.ToString();
+
+            foreach (string deviceId in locationParamSetDto.DevicesList!){
+
+                _fileService.FilePath = "params/"+deviceId+".txt";
+
+                var success = await _fileService.SaveToFileAsync(paramsString);
+
+                if (!success){
+                    _logger.LogError("Failed saving params for device: "+deviceId);
+                }
+
+            }
+
             return Ok(locationParamSetDto);
         }
+
+        [NonAction]
+        private string GetParamsFromFile(string deviceId){
+            _fileService.FilePath = "params/"+deviceId+".txt";
+            var paramsString = _fileService.ReadParamsFromFile();
+            return paramsString;
+        }
+
+        [NonAction]
+        private LocationParameters GetParamsFromString (string paramsString){
+
+            LocationParameters locationParameters = new LocationParameters();
+
+            string[] stringValues = paramsString.Split(',');
+
+            int updateInterval = int.Parse(stringValues[0]);
+            int minUpdateInterval = int.Parse(stringValues[1]);
+            int updateDistance = int.Parse(stringValues[2]);
+            bool startOnBoot = bool.Parse(stringValues[3]);
+
+            locationParameters.UpdateInterval = updateInterval;
+            locationParameters.MinUpdateInterval = minUpdateInterval;
+            locationParameters.UpdateDistance = updateDistance;
+            locationParameters.StartOnBoot = startOnBoot;
+
+
+            return locationParameters;
+        }
+
     }
 }
