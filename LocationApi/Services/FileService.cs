@@ -41,6 +41,11 @@ namespace LocationApi.Services
 
         public async Task<bool> SaveToFileAsync(string content){
 
+            if (!Directory.Exists("params"))
+            {
+                Directory.CreateDirectory("params");
+            }
+
             var success = true;
 
             try
