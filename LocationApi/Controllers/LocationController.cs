@@ -23,7 +23,7 @@ namespace LocationApi.Controllers
         public async Task< ActionResult<Location>> WriteLocation(Location location){
 
 
-            _logger.LogInformation("LOCATION RECEIVED: "+ location.Latitude.ToString()
+            _logger.LogInformation("LOCATION RECEIVED: "+location.DeviceId+" "+location.Latitude.ToString()
             +" - "+location.Longitude.ToString()
             +" - "+location.Accuracy.ToString());
 
