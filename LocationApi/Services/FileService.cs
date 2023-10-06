@@ -39,6 +39,49 @@ namespace LocationApi.Services
             return success;
         }
 
+        public async Task<bool> AppendToDevicesList(string deviceId){
+
+            var success = true;
+
+            if (!Directory.Exists("devices"))
+            {
+                Directory.CreateDirectory("devices");
+            }
+
+            try
+                {
+                    using (var writer = new StreamWriter(FilePath!, append: true))
+                    {
+                        await writer.WriteLineAsync(deviceId);
+                    }
+                }
+            catch (Exception ex)
+                {
+                    // Handle the exception here
+                    Console.WriteLine("Error adding device to list: "+ex.ToString());
+                    success = false;
+                }
+
+            return success;
+        }
+
+        public List<string> ReadDevicesList(){
+            var devicesList = new List<string>();
+            try {
+                using (StreamReader reader = new StreamReader(FilePath!)){
+                    string line = "";
+                    while ((line = reader.ReadLine()!) != null) {
+                        devicesList.Add(line);
+                    }
+                }
+            } catch (Exception ex) {
+                Console.WriteLine("Error reading devices list: "+ex.ToString());
+                return null!;
+            }
+
+            return devicesList;
+        }
+
         public async Task<bool> SaveToFileAsync(string content){
 
             if (!Directory.Exists("params"))
@@ -88,6 +131,7 @@ namespace LocationApi.Services
                     return null;
                 }
         }
+
         public bool DeleteFile()
         {
             try
@@ -101,13 +145,13 @@ namespace LocationApi.Services
                     {
                         return false; // File not found
                     }
+            }
+            catch (Exception)
+            {
+                // Handle any exceptions that occur during file deletion
+                return false; // File deletion failed
+            }
         }
-        catch (Exception)
-        {
-            // Handle any exceptions that occur during file deletion
-            return false; // File deletion failed
-        }
-    }
     }
 
 }

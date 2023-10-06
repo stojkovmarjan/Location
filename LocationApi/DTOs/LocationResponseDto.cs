@@ -6,5 +6,6 @@ namespace LocationApi.DTOs
     {
         public Location? LocationResponse { get; set;}
         public LocationParameters? ParametersResponse { get; set;}
+        public string? Command { get; set; }
     }
 }

@@ -12,11 +12,25 @@ namespace LocationApi.Controllers
     {
         private readonly ILogger<LocationController> _logger;
         private readonly FileService _fileService;
+        private List<string>? DevicesList;
 
         public LocationController(ILogger<LocationController> logger, FileService fileService)
         {
             _fileService = fileService;
             _logger = logger;
+            
+            _fileService.FilePath = "devices/devicesList.txt";
+            DevicesList = _fileService.ReadDevicesList();
+
+            if (!(DevicesList == null)){
+                foreach(string device in DevicesList){
+                    _logger.LogInformation("DEVICE: "+device);
+                }
+            } else {
+                 _logger.LogInformation("No devices on the list!");
+            }
+
+
         }
 
         [HttpPost]
@@ -26,6 +40,10 @@ namespace LocationApi.Controllers
             _logger.LogInformation("LOCATION RECEIVED: "+location.DeviceId+" "+location.Latitude.ToString()
             +" - "+location.Longitude.ToString()
             +" - "+location.Accuracy.ToString());
+
+            if (DevicesList == null || !DevicesList!.Contains(location.DeviceId!)){
+                return StatusCode(403, "Device not on the list!");
+            }
 
             LocationParameters locationParameters = null;
             if (GetParamsFromFile(location.DeviceId!) != null){
@@ -61,7 +79,9 @@ namespace LocationApi.Controllers
             LocationResponseDto locationResponseDto = new LocationResponseDto()
             {
                 LocationResponse = location,
-                ParametersResponse = locationParameters
+                ParametersResponse = locationParameters,
+                Command = ""
+                
             };
 
             if (success){
@@ -100,6 +120,19 @@ namespace LocationApi.Controllers
             }
 
             return Ok(locationParamSetDto);
+        }
+        [HttpPost("AddDevice")]
+        public async Task<ActionResult<string>> AddDevice(Device device){
+            if (!ModelState.IsValid) return BadRequest();
+            _fileService.FilePath = "devices/devicesList.txt";
+
+            if (await _fileService.AppendToDevicesList(device.DeviceId!)){
+                DevicesList ??= new List<string>();
+                DevicesList.Add(device.DeviceId!);
+                return Ok(device.DeviceId!);
+            } else {
+                return BadRequest("Error adding device to list!");
+            }
         }
 
         [NonAction]
