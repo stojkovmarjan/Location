@@ -41,7 +41,7 @@ namespace LocationApi.Controllers
             +" - "+location.Longitude.ToString()
             +" - "+location.Accuracy.ToString());
 
-            if (DevicesList == null || !DevicesList!.Contains(location.DeviceId!)){
+            if (!IsDeviceOnList(location.DeviceId!)){
                 return StatusCode(403, "Device not on the list!");
             }
 
@@ -161,6 +161,13 @@ namespace LocationApi.Controllers
 
 
             return locationParameters;
+        }
+
+        [NonAction]
+        private bool IsDeviceOnList(string deviceId){
+
+            return !(DevicesList == null || !DevicesList!.Contains(deviceId));
+            
         }
 
     }
