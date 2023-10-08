@@ -20,6 +20,7 @@ namespace LocationApi.Controllers
             _logger = logger;
             
             _fileService.FilePath = "devices/devicesList.txt";
+
             DevicesList = _fileService.ReadDevicesList();
 
             if (!(DevicesList == null)){
@@ -29,8 +30,6 @@ namespace LocationApi.Controllers
             } else {
                  _logger.LogInformation("No devices on the list!");
             }
-
-
         }
 
         [HttpPost]
@@ -133,6 +132,10 @@ namespace LocationApi.Controllers
             } else {
                 return BadRequest("Error adding device to list!");
             }
+        }
+        [HttpGet("IsRegistered")]
+        public ActionResult<string> IsDeviceRegistered(string deviceId){
+            return Ok(deviceId);
         }
 
         [NonAction]
