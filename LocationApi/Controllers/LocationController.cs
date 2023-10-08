@@ -135,7 +135,12 @@ namespace LocationApi.Controllers
         }
         [HttpGet("IsRegistered")]
         public ActionResult<string> IsDeviceRegistered(string deviceId){
-            return Ok(deviceId);
+            if (IsDeviceOnList(deviceId)){
+                return Ok(deviceId);
+            } else {
+                return StatusCode(403, "Device not on the list!");
+            }
+            
         }
 
         [NonAction]
