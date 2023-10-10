@@ -44,7 +44,8 @@ namespace LocationApi.Controllers
                 return StatusCode(403, "Device not on the list!");
             }
 
-            LocationParameters locationParameters = null;
+            LocationParameters locationParameters = null!;
+
             if (GetParamsFromFile(location.DeviceId!) != null){
                 locationParameters = GetParamsFromString(GetParamsFromFile(location.DeviceId!));
             }
@@ -91,6 +92,14 @@ namespace LocationApi.Controllers
             
         }
 
+        [HttpPost("SendTrackingProfile")]
+        public ActionResult<TrackingProfile> SendTrackingProfile(TrackingProfileDto trackingProfileDto){
+            if (!ModelState.IsValid) return BadRequest();
+            
+            return Ok(trackingProfileDto);
+
+        }
+
         [HttpPost("SendParameters")]
         public async Task<ActionResult<LocationParamSetDto>> SendParameters(
             LocationParamSetDto locationParamSetDto){
@@ -110,7 +119,7 @@ namespace LocationApi.Controllers
 
                 _fileService.FilePath = "params/"+deviceId+".txt";
 
-                var success = await _fileService.SaveToFileAsync(paramsString);
+                var success = await _fileService.SaveToFileAsync(paramsString, "params");
 
                 if (!success){
                     _logger.LogError("Failed saving params for device: "+deviceId);

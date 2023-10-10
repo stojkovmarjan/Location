@@ -82,11 +82,11 @@ namespace LocationApi.Services
             return devicesList;
         }
 
-        public async Task<bool> SaveToFileAsync(string content){
+        public async Task<bool> SaveToFileAsync(string content, string fileDir){
 
-            if (!Directory.Exists("params"))
+            if (!Directory.Exists(fileDir))
             {
-                Directory.CreateDirectory("params");
+                Directory.CreateDirectory(fileDir);
             }
 
             var success = true;
@@ -114,7 +114,7 @@ namespace LocationApi.Services
                 // Check if the file exists
                 if (!System.IO.File.Exists(FilePath))
                 {
-                    return null; // or throw an exception or handle the missing file scenario
+                    return null!; // or throw an exception or handle the missing file scenario
                 }
             
 
@@ -128,7 +128,7 @@ namespace LocationApi.Services
                 {
                     // Handle any exceptions that may occur during file reading
                     // You can log the exception or return an error message
-                    return null;
+                    return null!;
                 }
         }
 
