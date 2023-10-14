@@ -4,8 +4,12 @@ namespace LocationApi.DTOs
 {
     public class LocationResponseDto
     {
-        public Location? LocationResponse { get; set;}
+        // TODO: remove Location
+        //public Location? LocationResponse { get; set;}
         public LocationParameters? ParametersResponse { get; set;}
-        public string? Command { get; set; }
+        public string? Message { get; set; }
+        public TrackingProfile? TrackingProfile { get; set; }
+        public WorkDays? WorkDays { get; set; }
+        public WorkTime? WorkTime { get; set; }
     }
 }

@@ -2,7 +2,7 @@ namespace LocationApi.Models
 {
     public class TrackingProfile
     {
-        public string? Message { get; set; }
+        //public string? Message { get; set; }
         public string? EmployeeId { get; set; }
         public string? CompanyId { get; set; }
         public string? CompanyName { get; set; }

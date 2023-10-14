@@ -3,6 +3,7 @@ using LocationApi.DTOs;
 using LocationApi.Models;
 using LocationApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace LocationApi.Controllers
 {
@@ -23,6 +24,7 @@ namespace LocationApi.Controllers
 
             DevicesList = _fileService.ReadDevicesList();
 
+            
             if (!(DevicesList == null)){
                 foreach(string device in DevicesList){
                     _logger.LogInformation("DEVICE: "+device);
@@ -33,12 +35,14 @@ namespace LocationApi.Controllers
         }
 
         [HttpPost]
-        public async Task< ActionResult<Location>> WriteLocation(Location location){
+        public async Task< ActionResult<LocationResponseDto>> WriteLocation(Location location){
 
 
             _logger.LogInformation("LOCATION RECEIVED: "+location.DeviceId+" "+location.Latitude.ToString()
             +" - "+location.Longitude.ToString()
             +" - "+location.Accuracy.ToString());
+
+            TrackingProfileDto trackingProfileDto = GetProfileFromString(location.DeviceId!);
 
             if (!IsDeviceOnList(location.DeviceId!)){
                 return StatusCode(403, "Device not on the list!");
@@ -75,15 +79,22 @@ namespace LocationApi.Controllers
                 +DateTime.Now.Day.ToString()+".txt";
 
             var success = await _fileService.AppendToFileAsync(locationString);
-            
-            LocationResponseDto locationResponseDto = new LocationResponseDto()
-            {
-                LocationResponse = location,
-                ParametersResponse = locationParameters,
-                Command = ""
-                
-            };
 
+            LocationResponseDto locationResponseDto = new LocationResponseDto();
+            
+            if (trackingProfileDto == null){
+                locationResponseDto.ParametersResponse = locationParameters;
+            } else {
+                locationResponseDto = new LocationResponseDto()
+                {
+                    ParametersResponse = locationParameters,
+                    TrackingProfile = trackingProfileDto.TrackingProfile,
+                    WorkDays = trackingProfileDto.WorkDays,
+                    WorkTime = trackingProfileDto.WorkTime,
+                    Message = trackingProfileDto.Message                
+                };
+            }
+            
             if (success){
                 _fileService.FilePath = "params/"+location.DeviceId+".txt";
                 _fileService.DeleteFile();
@@ -93,8 +104,27 @@ namespace LocationApi.Controllers
         }
 
         [HttpPost("SendTrackingProfile")]
-        public ActionResult<TrackingProfile> SendTrackingProfile(TrackingProfileDto trackingProfileDto){
+        public async Task<ActionResult<TrackingProfileDto>> SendTrackingProfile(TrackingProfileDto trackingProfileDto){
+            
             if (!ModelState.IsValid) return BadRequest();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            _logger.LogInformation(JsonSerializer.Serialize(trackingProfileDto, options));
+
+            var trackingProfileDtoJson = JsonSerializer.Serialize(trackingProfileDto, options);
+
+            _fileService.FilePath = "params/"+trackingProfileDto.DeviceId+"_profile.txt";
+
+            var success = await _fileService.SaveToFileAsync(trackingProfileDtoJson, "params");
+
+            if (!success){
+                _logger.LogError("Failed saving tracking profile for device: "+trackingProfileDto.DeviceId);
+                return BadRequest("Error writing tracking profile");
+            }
             
             return Ok(trackingProfileDto);
 
@@ -160,6 +190,13 @@ namespace LocationApi.Controllers
         }
 
         [NonAction]
+        private string GetProfileFromFile(string deviceId){
+            _fileService.FilePath = "params/"+deviceId+"_profile.txt";
+            var profileJson = _fileService.ReadParamsFromFile();
+            return profileJson;
+        }
+
+        [NonAction]
         private LocationParameters GetParamsFromString (string paramsString){
 
             LocationParameters locationParameters = new LocationParameters();
@@ -185,6 +222,31 @@ namespace LocationApi.Controllers
 
             return !(DevicesList == null || !DevicesList!.Contains(deviceId));
             
+        }
+
+        [NonAction]
+        private TrackingProfileDto GetProfileFromString (string deviceId){
+
+            TrackingProfileDto trackingProfileDto = null!;
+
+            var trackingProfileJson = GetProfileFromFile(deviceId!);
+
+            if (GetProfileFromFile(deviceId!) != null){
+
+               
+                _logger.LogInformation("GOT PROFILE FROM FILE: "+trackingProfileJson);
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                trackingProfileDto = JsonSerializer.Deserialize<TrackingProfileDto>(
+                    trackingProfileJson, options
+                    )!;
+            }
+
+            return trackingProfileDto;
         }
 
     }
