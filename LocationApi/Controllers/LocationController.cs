@@ -80,11 +80,13 @@ namespace LocationApi.Controllers
 
             var success = await _fileService.AppendToFileAsync(locationString);
 
-            LocationResponseDto locationResponseDto = new LocationResponseDto();
-            
-            if (trackingProfileDto == null){
-                locationResponseDto.ParametersResponse = locationParameters;
-            } else {
+            LocationResponseDto locationResponseDto = new LocationResponseDto
+            {
+                ParametersResponse = locationParameters,
+                Message = ""
+            };
+
+            if (trackingProfileDto != null && locationParameters != null){
                 locationResponseDto = new LocationResponseDto()
                 {
                     ParametersResponse = locationParameters,
