@@ -183,6 +183,15 @@ namespace LocationApi.Controllers
             }
             
         }
+        [HttpGet("{deviceId}/{month}")]
+        public ActionResult<string> Report([FromRoute(Name = "deviceId")] string id, [FromRoute(Name = "month")] string month){
+
+            DummyReport dummyReport = new DummyReport();
+
+            dummyReport.device_id = id;
+            
+            return Ok(dummyReport);
+        }
 
         [NonAction]
         private string GetParamsFromFile(string deviceId){
@@ -252,4 +261,5 @@ namespace LocationApi.Controllers
         }
 
     }
+
 }
