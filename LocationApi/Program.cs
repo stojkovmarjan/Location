@@ -3,7 +3,7 @@ using Serilog;
 using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// GITHUB TRIGGER TEST
 // Add services to the container.
 
 //serilog
