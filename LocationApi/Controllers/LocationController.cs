@@ -86,12 +86,12 @@ namespace LocationApi.Controllers
                 Message = ""
             };
             
-            if (location.DeviceId != null){
-                var pro = GetProfileFromString(location.DeviceId);
-                if (pro != null){
-                    trackingProfileDto = pro;
-                }
-            }
+            // if (location.DeviceId != null){
+            //     var pro = GetProfileFromString(location.DeviceId);
+            //     if (pro != null){
+            //         trackingProfileDto = pro;
+            //     }
+            // }
            
 
             if (trackingProfileDto != null && locationParameters != null){
@@ -248,11 +248,11 @@ namespace LocationApi.Controllers
 
             TrackingProfileDto trackingProfileDto = null!;
 
-            var profileFile = deviceId+"_profile.txt";
+            ;
 
-            var trackingProfileJson = GetProfileFromFile(profileFile);
+            var trackingProfileJson = GetProfileFromFile(deviceId);
 
-            if (GetProfileFromFile(profileFile) != null){
+            if (GetProfileFromFile(deviceId) != null){
 
                
                 _logger.LogInformation("GOT PROFILE FROM FILE: "+trackingProfileJson);
