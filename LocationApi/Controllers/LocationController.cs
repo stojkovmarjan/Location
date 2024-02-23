@@ -248,9 +248,11 @@ namespace LocationApi.Controllers
 
             TrackingProfileDto trackingProfileDto = null!;
 
-            var trackingProfileJson = GetProfileFromFile(deviceId!);
+            var profileFile = deviceId+"_profile.txt";
 
-            if (GetProfileFromFile(deviceId!) != null){
+            var trackingProfileJson = GetProfileFromFile(profileFile);
+
+            if (GetProfileFromFile(profileFile) != null){
 
                
                 _logger.LogInformation("GOT PROFILE FROM FILE: "+trackingProfileJson);
