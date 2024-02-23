@@ -85,12 +85,20 @@ namespace LocationApi.Controllers
                 ParametersResponse = locationParameters,
                 Message = ""
             };
+            
+            if (location.DeviceId != null){
+                var pro = GetProfileFromString(location.DeviceId);
+                if (pro != null){
+                    trackingProfileDto = pro;
+                }
+            }
+           
 
             if (trackingProfileDto != null && locationParameters != null){
                 locationResponseDto = new LocationResponseDto()
                 {
                     ParametersResponse = locationParameters,
-                    TrackingProfile = trackingProfileDto.TrackingProfile,
+                    TrackingProfile =  trackingProfileDto.TrackingProfile,
                     WorkDays = trackingProfileDto.WorkDays,
                     WorkTime = trackingProfileDto.WorkTime,
                     Message = trackingProfileDto.Message                
