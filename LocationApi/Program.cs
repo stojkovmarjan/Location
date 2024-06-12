@@ -5,6 +5,7 @@ using Serilog.Events;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// github webhook test
 
 //serilog
 Log.Logger = new LoggerConfiguration() // serilog to file from nuget
