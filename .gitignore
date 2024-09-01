@@ -480,6 +480,10 @@ bin/
 log/
 params/
 devices/
+uploads/
+uploads/profile_pics/
+uploads/signatures/
+
 
 
 
