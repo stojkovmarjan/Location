@@ -11,35 +11,61 @@ namespace LocationApi.Services
         public string? FilePath { get; set; }
         public FileService()
         {
-            
+
         }
         public FileService(string filePath)
         {
             FilePath = filePath;
         }
+        
 
+        public async Task<bool> SaveUploadedFileAsync(IFormFile file, string directory)
+        {
+            try
+            {
+                if (file.Length > 0)
+                {
+                    if (!Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
 
-        public async Task<bool> AppendToFileAsync(string content){
+                    var filePath = Path.Combine(directory, file.FileName);
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await file.CopyToAsync(stream);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving uploaded file: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> AppendToFileAsync(string content)
+        {
 
             var success = true;
 
             try
+            {
+                using (var writer = new StreamWriter(FilePath!, append: true))
                 {
-                    using (var writer = new StreamWriter(FilePath!, append: true))
-                    {
-                        await writer.WriteLineAsync(content);
-                    }
+                    await writer.WriteLineAsync(content);
                 }
+            }
             catch (Exception ex)
-                {
-                    // Handle the exception here
-                    success = false;
-                }
+            {
+                // Handle the exception here
+                success = false;
+            }
 
             return success;
         }
 
-        public async Task<bool> AppendToDevicesList(string deviceId){
+        public async Task<bool> AppendToDevicesList(string deviceId)
+        {
 
             var success = true;
 
@@ -49,40 +75,47 @@ namespace LocationApi.Services
             }
 
             try
+            {
+                using (var writer = new StreamWriter(FilePath!, append: true))
                 {
-                    using (var writer = new StreamWriter(FilePath!, append: true))
-                    {
-                        await writer.WriteLineAsync(deviceId);
-                    }
+                    await writer.WriteLineAsync(deviceId);
                 }
+            }
             catch (Exception ex)
-                {
-                    // Handle the exception here
-                    Console.WriteLine("Error adding device to list: "+ex.ToString());
-                    success = false;
-                }
+            {
+                // Handle the exception here
+                Console.WriteLine("Error adding device to list: " + ex.ToString());
+                success = false;
+            }
 
             return success;
         }
 
-        public List<string> ReadDevicesList(){
+        public List<string> ReadDevicesList()
+        {
             var devicesList = new List<string>();
-            try {
-                using (StreamReader reader = new StreamReader(FilePath!)){
+            try
+            {
+                using (StreamReader reader = new StreamReader(FilePath!))
+                {
                     string line = "";
-                    while ((line = reader.ReadLine()!) != null) {
+                    while ((line = reader.ReadLine()!) != null)
+                    {
                         devicesList.Add(line);
                     }
                 }
-            } catch (Exception ex) {
-                Console.WriteLine("Error reading devices list: "+ex.ToString());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error reading devices list: " + ex.ToString());
                 return null!;
             }
 
             return devicesList;
         }
 
-        public async Task<bool> SaveToFileAsync(string content, string fileDir){
+        public async Task<bool> SaveToFileAsync(string content, string fileDir)
+        {
 
             if (!Directory.Exists(fileDir))
             {
@@ -92,23 +125,24 @@ namespace LocationApi.Services
             var success = true;
 
             try
-                {
-                    
+            {
+
                 using var writer = new StreamWriter(FilePath!, append: false);
 
                 await writer.WriteLineAsync(content);
             }
             catch (Exception ex)
-                {
-                    // Handle the exception here
-                    Console.WriteLine(ex.Message);
-                    success = false;
-                }
+            {
+                // Handle the exception here
+                Console.WriteLine(ex.Message);
+                success = false;
+            }
 
             return success;
         }
 
-        public string ReadParamsFromFile(){
+        public string ReadParamsFromFile()
+        {
             try
             {
                 // Check if the file exists
@@ -116,7 +150,7 @@ namespace LocationApi.Services
                 {
                     return null!; // or throw an exception or handle the missing file scenario
                 }
-            
+
 
                 // Read the first line from the file
                 string line = System.IO.File.ReadLines(FilePath).FirstOrDefault()!;
@@ -124,12 +158,12 @@ namespace LocationApi.Services
                 return line;
 
             }
-                catch (Exception ex)
-                {
-                    // Handle any exceptions that may occur during file reading
-                    // You can log the exception or return an error message
-                    return null!;
-                }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that may occur during file reading
+                // You can log the exception or return an error message
+                return null!;
+            }
         }
 
         public bool DeleteFile()
@@ -141,10 +175,10 @@ namespace LocationApi.Services
                     File.Delete(FilePath);
                     return true; // File deleted successfully
                 }
-                    else
-                    {
-                        return false; // File not found
-                    }
+                else
+                {
+                    return false; // File not found
+                }
             }
             catch (Exception)
             {
