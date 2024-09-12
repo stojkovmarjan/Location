@@ -242,6 +242,18 @@ namespace LocationApi.Controllers
                 return BadRequest("Error adding device to list!");
             }
         }
+        [HttpPut("{employeeId}")]
+        public async Task<IActionResult> UpdateEmployeePhoto([FromRoute] string employeeId, [FromBody] string employeePhoto)
+        {
+            // Your logic to update the employee photo goes here
+            // You can decode the base64 string and save it to your database or file system
+            // For example:
+            byte[] imageBytes = Convert.FromBase64String(employeePhoto);
+            // Save the imageBytes to your database or file system
+
+            // Return a success response
+            return Ok(employeeId);
+        }
         [HttpGet("IsRegistered")]
         public ActionResult<string> IsDeviceRegistered(string deviceId)
         {
