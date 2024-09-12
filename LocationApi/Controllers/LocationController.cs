@@ -249,7 +249,15 @@ namespace LocationApi.Controllers
             // You can decode the base64 string and save it to your database or file system
             // For example:
             if (photo == null) return BadRequest();
-            byte[] imageBytes = Convert.FromBase64String(photo.EmployeePhoto!);
+            try
+            {
+                byte[] imageBytes = Convert.FromBase64String(photo.EmployeePhoto!);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
             // Save the imageBytes to your database or file system
 
             // Return a success response
